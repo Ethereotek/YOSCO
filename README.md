@@ -6,3 +6,5 @@ Yosco is a protocol bridge that receives OSC messages and translates them into a
 Note that the UDP/TCP toggle is for testing purposes only.
 Use UDP to send test packets on the local-host.
 Use TCP to send packets to a Yamaha console.
+
+Note that this verison of YOSCO is NOT compatible with Mac M1 architecture.
