@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto Mono">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Overpass"> -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- <script src="/scripts"></script> -->
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<title>YOSCO OSC API</title>
+<style>
+
+</style>
+
+<body>
+    <div id="app">
+        <div class="flex-box">
+            <div class="rounded-border">
+                <div class="flex-child">
+                    <!-- <div class="flex-box"> -->
+                    <div>
+                        <h1>YOSCO OSC API v 1.0.2</h1>
+                    </div>
+
+                    <div v-for="[key, val] in Object.entries(addresses)">
+                        <div class="flex-box section-header">
+                            <div class="flex-child style-line"></div>
+                            <h4 v-text="key" class="flex-child"></h4>
+                            <div class="flex-child style-line"></div>
+                        </div>
+                        <table class="address-table" rules="cols" style="width:100%">
+                            <tr>
+                                <th class="address-table address">ADDRESS</th>
+                                <th class="address-table format">FORMAT</th>
+                                <th class="address-table data">DATA</th>
+                                <th class="address-table example">EXAMPLE</th>
+                                <th class="address-table description">DESCRIPTION</th>
+                            </tr>
+                            <tr v-for="address in val" class="nodes-row" onclick="rowClick(this)">
+                                <td v-text="address.address" class="address" onclick="rowClick(this)"></td>
+                                <td v-text="address.format" class="format"></td>
+                                <td v-text="address.data" class="data"></td>
+                                <td class="example"><p v-for="ex in address.example" v-text="ex"></td>
+                                <td v-text="address.description" class="description"></td>
+
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="flex-box space-between">
+            <!-- Control and monitoring section -->
+
+        </div>
+    </div>
+
+    <script>
+        const YOSCO = {
+            data() {
+                return {
+                    addresses: {
+                        "INPUT": [
+                            {
+                                "address": "/set/mixer/input/[n]/gain",
+                                "format": ",i",
+                                "data": "[-96 to 66]",
+                                "example": ["/set/mixer/input/1/gain -6"],
+                                "description": "Sets the HA gain of an input channel."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/fader/level",
+                                "format": ",f",
+                                "data": "[-138. to 10.]",
+                                "example": ["/set/mixer/input/2/fader/level -12.5"],
+                                "description": "Sets the fader level of an input channel."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/fader/on",
+                                "format": ",i or ,s",
+                                "data": "[1,0],[on,off]",
+                                "example": ["/set/mixer/input/4/fader/on 0", "/set/mixer/input/4/fader/on off"],
+                                "description": "Mutes or unmutes channel strip; 1 = 'ON', 0 = 'OFF'."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/pan",
+                                "format": ",i",
+                                "data": "[-63 to 63]",
+                                "example": ["/set/mixer/input/4/pan 15"],
+                                "description": "Sets the pan of an input channel; -63 is hard left, 63 is hard right."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/label/name",
+                                "format": ",s",
+                                "data": "alphanumeric",
+                                "example": ["/set/mixer/input/4/fader/label Guitar"],
+                                "description": "Sets the text of an input channel's scribble strip. Anything over 8 characters will be truncated."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/label/color",
+                                "format": ",s",
+                                "data": "[Blue, Orange, Yellow, Purple, Cyan, Magenta, Red, Green, Off]",
+                                "example": ["/set/mixer/input/4/fader/label Magenta"],
+                                "description": "Sets the color of an input channel's scribble strip."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/to_mix/[m]/on",
+                                "format": ",i or ,s",
+                                "data": "[1,0],[on,off]",
+                                "example": ["/set/mixer/input/4/to_mix/12/on 1", "/set/mixer/input/4/to_mix/12/on off"],
+                                "description": "Mutes or unmutes an input channel's send to an aux mix."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/to_mix/[m]/level",
+                                "format": ",f",
+                                "data": "[1,0],[on,off]",
+                                "example": ["/set/mixer/input/4/to_mix/12/level -12"],
+                                "description": "Sets the send level of an input channel to an aux mix."
+                            },
+                            {
+                                "address": "/set/mixer/input/[n]/dca/[d]/assign",
+                                "format": ",i",
+                                "data": "[1,0]",
+                                "example": ["/set/mixer/input/4/dca/8/assign 1"],
+                                "description": "Assigns or unassigns an input channel to a DCA."
+                            }],
+                        "DCA": [
+                            {
+                                "address": "/set/mixer/DCA/[d]/fader/level",
+                                "format": ",f",
+                                "data": "[-138. to 10.]",
+                                "example": ["/set/mixer/DCA/2/fader/level 0.0"],
+                                "description": "Sets the fader level of a DCA."
+                            },
+                            {
+                                "address": "/set/mixer/DCA/[d]/fader/on",
+                                "format": ",i or ,s",
+                                "data": "[1,0],[on,off]",
+                                "example": ["/set/mixer/DCA/2/fader/on off"],
+                                "description": "Mutes or unmutes a DCA, which actually mutes all of the assigned channels."
+                            },
+                            {
+                                "address": "/set/mixer/DCA/[d]/label/name",
+                                "format": ",s",
+                                "data": "alphanumeric",
+                                "example": ["/set/mixer/DCA/3/label/name Drums"],
+                                "description": "Sets the text of a DCA's scribble strip. Anything over 8 characters will be truncated."
+                            },
+                            {
+                                "address": "/set/mixer/DCA/[d]/label/color",
+                                "format": ",s",
+                                "data": "[Blue, Orange, Yellow, Purple, Cyan, Magenta, Red, Green, Off]",
+                                "example": ["/set/mixer/DCA/4/label/color Blue"],
+                                "description": "Sets the color of a DCA's scribble strip."
+                            }
+
+                        ],
+                        "MIX": [
+                            {
+                                "address": "/set/mixer/mix/[m]/fader/on",
+                                "format": ",i or ,s",
+                                "data": "[1,0],[on,off]",
+                                "example": ["/set/mixer/mix/1/fader/on 1"],
+                                "description": "Mutes or unmutes an aux mix."
+                            },
+                            {
+                                "address": "/set/mixer/mix/[m]/fader/level",
+                                "format": ",f",
+                                "data": "[-138. to 10.]",
+                                "example": ["/set/mixer/mix/8/fader/level -10.1"],
+                                "description": "Sets the fader of level of an aux mix."
+                            },
+                            {
+                                "address": "/set/mixer/mix/[m]/to_mtx/[mtx]/on",
+                                "format": ",i or ,s",
+                                "data": "[0,1],[on,off]",
+                                "example": ["/set/mixer/mix/1/to_mtx/4/on off"],
+                                "description": "Mutes or unmutes an aux mix's send to a matrix."
+                            },
+                            {
+                                "address": "/set/mixer/mix/[m]/to_mtx/[mtx]/level",
+                                "format": ",f",
+                                "data": "[-138. to 10.]",
+                                "example": ["/set/mixer/mix/1/to_mtx/4/level 2.5"],
+                                "description": "Sets the send level of an aux mix to a matrix."
+                            },
+                        ],
+                        "MATRIX": [
+                            {
+                                "address": "/set/mixer/mtx/[mtx]/fader/on",
+                                "format": ",i",
+                                "data": "[0,1], [on,off]",
+                                "example": ["/set/mixer/mtx/8/fader/on 1"],
+                                "description": "Mutes or unmutes a matrix output."
+                            },
+                        ],
+                        "SCENES": [
+                            {
+                                "address": "/scene/[sc]/store",
+                                "format": ",s",
+                                "data": "alphanumeric",
+                                "example":["/scene/20/store 'ACT II scene 1'"],
+                                "description":"Stores a scene on a QL or CL series."
+                            },
+                            {
+                                "address":"/scene/[sc]/recall",
+                                "format":"n/a",
+                                "data":"none",
+                                "example":["/scene/20/recall"],
+                                "description":"Recalls a scene on a QL or CL series."
+                            }
+                        ],
+                        "BRIDGE CONTROL":[
+                            {
+                                "address":"/bridge/network/ip",
+                                "format":",s",
+                                "data":"IP Address",
+                                "example":["/bridge/network/ip 192.168.7.10"],
+                                "description":"Changes the IP address that the bridge sends to; set this to the IP of your target console."
+                            },
+                            {
+                                "address":"/bridge/network/port",
+                                "format":",i",
+                                "data":"[1024-65535]",
+                                "example":["/bridge/network/port 35001"],
+                                "description":"Changes the port that the bridge listens on."
+                            },
+                            {
+                                "address":"/bridge/console",
+                                "format":",s",
+                                "data":"[QL1, QL5, CL1, CL3, CL5, TF1, TF3, TF5]",
+                                "example":["/bridge/console CL5"],
+                                "description":"Changes the console model that the bridge translates for."
+                            },
+                            {
+                                "address":"/bridge/on",
+                                "format":"n/a",
+                                "data":"none",
+                                "example":["/bridge/on"],
+                                "description":"Activates the bridge."
+                            },
+                            {
+                                "address":"/bridge/off",
+                                "format":"n/a",
+                                "data":"none",
+                                "example":["/bridge/off"],
+                                "description":"Deactivates the bridge."
+                            }
+                        ]
+
+                    }
+                };
+            }
+        };
+        window.app = Vue.createApp(YOSCO).mount("#app");
+
+    </script>
+</body>
+
+</html>
+<!-- <script>
+    // These two vars only here for testing without the scripts.js file
+    var lastRowClicked = null;  //used for radio selection of rows in table
+    var selectedAlias = null;
+
+    const websocket = new WebSocket("ws://localhost:9980");
+
+    websocket.addEventListener("open", event => {
+        console.log('websocket connection opened: ', event);
+    })
+
+    websocket.addEventListener("message", event => {
+        // this is used for streaming node table and node data updates
+        let data = JSON.parse(event.data);
+
+        if (data.messageType == "nodes_update") {
+            window.app.nodes = data.connectedNodes;
+        } else if (data.messageType == "data_update") {
+            let alias = data.data["Alias"];
+            let dataType = data.data.type;
+            let dataValue = data.data.value;
+
+            for (let [key, val] of Object.entries(window.app.nodes)) {
+                if (val["Alias"] === alias) {
+                    val[dataType] = dataValue;
+                }
+            }
+        } else {
+            return -1;
+        }
+    })
+
+    window.onload = function () {
+        // let username = touchnet.session.username;
+        // let token = touchnet.session.token;
+        let url = `http://localhost:9980/nodes`;
+        // once the window has finished loading content, ask for node data
+        httpRequest.open('GET', url);
+        // on server response
+        httpRequest.onload = function () {
+            var data = httpRequest.response;
+            let contentType = httpRequest.getResponseHeader("Content-Type");
+
+            if (httpRequest.status == 200 && contentType == "application/json") {
+                data = JSON.parse(data);
+                console.log(data.connectedNodes)
+                window.app.nodes = data.connectedNodes;
+            }
+        }
+        httpRequest.send()
+    }
+
+
+    // this is only here for testing without the scripts.js file
+    function rowClick(element) {
+        // get the row that was previously selected
+        let currentRow = lastRowClicked;
+        // if not null, remove the node-row-selected class
+        if (currentRow) {
+            currentRow.classList.remove('node-row-selected');
+        }
+        // update lastRowClicked to be the most current
+        lastRowClicked = element;
+        alias = element.textContent;
+        selectedAlias = alias;
+
+        // add the node-row-selected class so it's highlighted
+        lastRowClicked.classList.add('node-row-selected');
+
+
+    };
+
+</script> -->
