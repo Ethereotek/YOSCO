@@ -25,7 +25,10 @@ Yosco is a protocol bridge that receives OSC messages and translates them into a
 
 `Console Model:` Allows you to select the model of console you would like to control. While the OSC API is identical for each model, this is not the case for the format to which they are being converted. Further, Yosco will place constraints on what you can target, e.g. channel numbers, and will raise an error if you target a channel outside the console’s range, e.g. calling channel 64 on a QL1.
 
-### **Some House-Keeping**
+### **Building the Application**
+To build the standalone application, open the patcher and navigate to `File>Build Collective/Application`. In the Build window, click `Open Script` and open the `build_script` text file in the parent directory of the package. Then click build. Save as type `Application (*.exe)` on Windows.
+
+### **Using the Patcher**
 
 If you choose to use the patcher, you may have to make some changes to the file settings. This is because it uses external javascript and subpatches. In Max, navigate to `Options>File Preferences` and click the `+` symbol in the bottom left-hand corner to add a path. Add a path to the `JavaScript` directory in the package folder. Click the `+` again and add another path to the `SubPatches` directory. Restart Max.
 
@@ -43,6 +46,8 @@ If you choose to use the patcher, you may have to make some changes to the file 
 
 You are now ready to control your Yamaha console with OSC.
 
+### **API Documentation**
+In the `Documentation` folder you will find a web doc with the OSC API detailing all available set commands as well as bridge control commands.
 
 
 
