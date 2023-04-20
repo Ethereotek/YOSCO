@@ -26,7 +26,11 @@ Yosco is a protocol bridge that receives OSC messages and translates them into a
 `Console Model:` Allows you to select the model of console you would like to control. While the OSC API is identical for each model, this is not the case for the format to which they are being converted. Further, Yosco will place constraints on what you can target, e.g. channel numbers, and will raise an error if you target a channel outside the console’s range, e.g. calling channel 64 on a QL1.
 
 ### **Building the Application**
-To build the standalone application, open the patcher and navigate to `File>Build Collective/Application`. In the Build window, click `Open Script` and open the `build_script` text file in the parent directory of the package. Then click build. Save as type `Application (*.exe)` on Windows.
+First you will have to edit the build_script.txt file, which lives in the parent directory. Replace <path/to/package> with the directory path on your machine, for example: 
+- folder C:/Users/user-account/Documents/YOSCO/JavaScript
+- folder C:/Users/user-account/Documents/YOSCO/SubPatches
+
+Save the file. Then open the patcher and navigate to `File>Build Collective/Application`. In the Build window, click `Open Script` and open the `build_script` text file that you just edited. Then click build. Save as type `Application (*.exe)` on Windows.
 
 ### **Using the Patcher**
 
