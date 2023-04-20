@@ -3,8 +3,10 @@
 
 Yosco is a protocol bridge that receives OSC messages and translates them into a format that can be understood by Yamaha’s CL, QL and TF series consoles. Yosco runs on the same machine as the OSC sender, which can be any arbitrary application, such as QLab. It is not a controller in itself, it is a translator.
 
-**NOTE:** This verison of YOSCO is *not* compatible with Mac M1 architecture.
-
+**NOTE:** This verison of YOSCO is *not* compatible with Mac M1 architecture.  
+**Dependencies:** the following packages must be installed:  
+- CNMAT Externals 
+- Sadam Library	
 ### **UI Indicators**
 
 `Send:` Blinks when Yosco successfully dispatches a command to the network. Note that this does not indicate whether the message has reached a destination, nor whether it has been successfully interpreted, i.e. your Yamaha device may receive the message, but fail to properly read it.
